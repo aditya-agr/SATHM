@@ -197,4 +197,49 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(loop);
     }
 
+    // --- Hero Marquee Controls ---
+    const marqueeContent = document.querySelector('.marquee-content');
+    const marqueePrevBtn = document.querySelector('.marquee-prev');
+    const marqueeNextBtn = document.querySelector('.marquee-next');
+    
+    if (marqueeContent && marqueePrevBtn && marqueeNextBtn) {
+        let isPaused = false;
+        
+        // Pause animation on hover
+        marqueeContent.addEventListener('mouseenter', () => {
+            marqueeContent.style.animationPlayState = 'paused';
+            isPaused = true;
+        });
+        
+        marqueeContent.addEventListener('mouseleave', () => {
+            marqueeContent.style.animationPlayState = 'running';
+            isPaused = false;
+        });
+        
+        // Control buttons
+        marqueePrevBtn.addEventListener('click', () => {
+            marqueeContent.style.animation = 'none';
+            const currentTransform = window.getComputedStyle(marqueeContent).transform;
+            const matrix = new DOMMatrix(currentTransform);
+            const currentX = matrix.m41;
+            marqueeContent.style.transform = `translateX(${currentX + 300}px)`;
+            
+            setTimeout(() => {
+                marqueeContent.style.animation = 'marquee 40s linear infinite';
+            }, 100);
+        });
+        
+        marqueeNextBtn.addEventListener('click', () => {
+            marqueeContent.style.animation = 'none';
+            const currentTransform = window.getComputedStyle(marqueeContent).transform;
+            const matrix = new DOMMatrix(currentTransform);
+            const currentX = matrix.m41;
+            marqueeContent.style.transform = `translateX(${currentX - 300}px)`;
+            
+            setTimeout(() => {
+                marqueeContent.style.animation = 'marquee 40s linear infinite';
+            }, 100);
+        });
+    }
+
 });

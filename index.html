@@ -56,49 +56,66 @@
     <main>
 
 <!-- Hero Section with Marquee Photos and Announcements -->
-<section class="hero-announcement">
+<section class="hero-announcement" aria-labelledby="glimpses-heading">
     <div class="container">
         <div class="hero-grid">
-            <!-- Photo Marquee Section -->
+            <!-- Marquee Photos -->
             <div class="marquee-section">
-                <div class="photo-marquee">
-                    <div class="marquee-track">
+                <h2 id="glimpses-heading" class="section-title">Glimpses of Centre</h2>
+                <div class="marquee-container" role="img" aria-label="Gallery of Centre activities and events">
+                    <div class="marquee-content">
+                        <!-- Duplicate images for seamless loop -->
                         <img src="images/hero-background.jpg" alt="Campus Infrastructure" loading="lazy">
                         <img src="images/sathmlogo.png" alt="SATHM Events" loading="lazy">
                         <img src="images/hero-background.jpg" alt="Student Activities" loading="lazy">
                         <img src="images/sathmlogo.png" alt="Industry Partnerships" loading="lazy">
                         <img src="images/hero-background.jpg" alt="Academic Excellence" loading="lazy">
+                        <!-- Duplicate images for seamless loop -->
+                        <img src="images/hero-background.jpg" alt="Campus Infrastructure" loading="lazy">
+                        <img src="images/sathmlogo.png" alt="SATHM Events" loading="lazy">
+                        <img src="images/hero-background.jpg" alt="Student Activities" loading="lazy">
+                        <img src="images/sathmlogo.png" alt="Industry Partnerships" loading="lazy">
                     </div>
+                </div>
+                <!-- Slider Controls -->
+                <div class="marquee-controls" aria-label="Glimpses controls">
+                    <button class="marquee-btn marquee-prev" type="button" aria-label="Previous images">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="15 18 9 12 15 6"></polyline>
+                        </svg>
+                    </button>
+                    <button class="marquee-btn marquee-next" type="button" aria-label="Next images">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <polyline points="9 18 15 12 9 6"></polyline>
+                        </svg>
+                    </button>
                 </div>
             </div>
             
             <!-- Announcements Section -->
-            <div class="announcements-section">
-                <h2>Announcements</h2>
-                <div class="announcements-list">
-                    <div class="announcement-item">
-                        <div class="announcement-date">Dec 15, 2024</div>
-                        <h3>New Aviation Program Launch</h3>
-                        <p>Introducing comprehensive Aviation Management course with industry partnerships.</p>
-                    </div>
-                    <div class="announcement-item">
-                        <div class="announcement-date">Dec 10, 2024</div>
-                        <h3>Industry Expert Session</h3>
-                        <p>Special session on "Future of Tourism Industry" by industry professionals.</p>
-                    </div>
-                    <div class="announcement-item">
-                        <div class="announcement-date">Dec 5, 2024</div>
-                        <h3>Admissions Open 2025</h3>
-                        <p>Applications now open for Bachelor's and Diploma programs in Aviation, Tourism & Hospitality.</p>
-                    </div>
-                    <div class="announcement-item">
-                        <div class="announcement-date">Nov 30, 2024</div>
-                        <h3>MOU Signing Ceremony</h3>
-                        <p>Strategic partnership signed with leading hospitality chains for student placements.</p>
-                    </div>
+            <aside class="announcements-section" aria-labelledby="announcements-heading">
+                <h2 id="announcements-heading" class="section-title">Announcements</h2>
+                <div class="announcement-box">
+                    <ul class="announcement-marquee" role="list">
+                        <li class="announcement-item green" role="listitem">
+                            <p>New Aviation Program Launch - Introducing comprehensive Aviation Management course with industry partnerships.</p>
+                            <time class="date" datetime="2024-12-15">15th Dec 2024</time>
+                        </li>
+                        <li class="announcement-item green" role="listitem">
+                            <p>Industry Expert Session - Special session on "Future of Tourism Industry" by industry professionals.</p>
+                            <time class="date" datetime="2024-12-10">10th Dec 2024</time>
+                        </li>
+                        <li class="announcement-item green" role="listitem">
+                            <p>Admissions Open 2025 - Applications now open for Bachelor's and Diploma programs in Aviation, Tourism & Hospitality.</p>
+                            <time class="date" datetime="2024-12-05">5th Dec 2024</time>
+                        </li>
+                        <li class="announcement-item green" role="listitem">
+                            <p>MOU Signing Ceremony - Strategic partnership signed with leading hospitality chains for student placements.</p>
+                            <time class="date" datetime="2024-11-30">30th Nov 2024</time>
+                        </li>
+                    </ul>
                 </div>
-                <a href="events.html" class="view-all-btn">View All Announcements</a>
-            </div>
+            </aside>
         </div>
     </div>
 </section>
