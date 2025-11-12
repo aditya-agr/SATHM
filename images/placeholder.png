@@ -1,0 +1,6 @@
+<!-- This is a placeholder for images. In a real deployment, you would replace this with actual images -->
+<svg width="300" height="200" xmlns="http://www.w3.org/2000/svg">
+  <rect width="300" height="200" fill="#005A9E"/>
+  <text x="150" y="100" text-anchor="middle" fill="white" font-family="Arial" font-size="18">SATHM</text>
+  <text x="150" y="125" text-anchor="middle" fill="white" font-family="Arial" font-size="12">Placeholder Image</text>
+</svg>
