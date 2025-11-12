@@ -197,49 +197,108 @@ document.addEventListener('DOMContentLoaded', function() {
         requestAnimationFrame(loop);
     }
 
-    // --- Hero Marquee Controls ---
-    const marqueeContent = document.querySelector('.marquee-content');
-    const marqueePrevBtn = document.querySelector('.marquee-prev');
-    const marqueeNextBtn = document.querySelector('.marquee-next');
-    
-    if (marqueeContent && marqueePrevBtn && marqueeNextBtn) {
-        let isPaused = false;
-        
-        // Pause animation on hover
-        marqueeContent.addEventListener('mouseenter', () => {
-            marqueeContent.style.animationPlayState = 'paused';
-            isPaused = true;
-        });
-        
-        marqueeContent.addEventListener('mouseleave', () => {
-            marqueeContent.style.animationPlayState = 'running';
-            isPaused = false;
-        });
-        
-        // Control buttons
-        marqueePrevBtn.addEventListener('click', () => {
-            marqueeContent.style.animation = 'none';
-            const currentTransform = window.getComputedStyle(marqueeContent).transform;
-            const matrix = new DOMMatrix(currentTransform);
-            const currentX = matrix.m41;
-            marqueeContent.style.transform = `translateX(${currentX + 300}px)`;
-            
-            setTimeout(() => {
-                marqueeContent.style.animation = 'marquee 40s linear infinite';
-            }, 100);
-        });
-        
-        marqueeNextBtn.addEventListener('click', () => {
-            marqueeContent.style.animation = 'none';
-            const currentTransform = window.getComputedStyle(marqueeContent).transform;
-            const matrix = new DOMMatrix(currentTransform);
-            const currentX = matrix.m41;
-            marqueeContent.style.transform = `translateX(${currentX - 300}px)`;
-            
-            setTimeout(() => {
-                marqueeContent.style.animation = 'marquee 40s linear infinite';
-            }, 100);
-        });
-    }
+    // --- Glimpses slider (prev/next) with DOM reordering for infinite loop ---
+    (function setupGlimpsesSlider() {
+        const container = document.querySelector('.marquee-container');
+        const track = container?.querySelector('.marquee-content');
+        const prevBtn = container?.parentElement?.querySelector('.marquee-prev');
+        const nextBtn = container?.parentElement?.querySelector('.marquee-next');
+        if (!container || !track || !prevBtn || !nextBtn) return;
+
+        // closure timer for resume
+        let glimpsesResumeT = null;
+
+        const getComputedTranslateX = (el) => {
+            const style = window.getComputedStyle(el);
+            const transform = style.transform || 'matrix(1, 0, 0, 1, 0, 0)';
+            const match = transform.match(/matrix\([^,]+,[^,]+,[^,]+,[^,]+,\s*([^,]+),\s*([^\)]+)\)/);
+            if (match) {
+                const x = parseFloat(match[1]);
+                return isNaN(x) ? 0 : x;
+            }
+            return 0;
+        };
+
+        const pauseAuto = () => {
+            // Freeze current computed position into inline transform and stop animation
+            const x = getComputedTranslateX(track);
+            track.style.animationPlayState = 'paused';
+            track.style.animation = 'none';
+            track.style.transition = 'none';
+            track.style.transform = `translateX(${x}px)`;
+        };
+        const resumeAuto = () => {
+            // Clear inline transform/transition and let CSS animation run again
+            track.style.transition = 'none';
+            track.style.transform = '';
+            track.style.animation = '';
+            track.style.animationPlayState = 'running';
+        };
+
+        // Calculate one image width step (first child including margin)
+        const getStep = () => {
+            const first = track.querySelector('img');
+            if (!first) return 0;
+            const styles = window.getComputedStyle(first);
+            const mr = parseFloat(styles.marginRight) || 0;
+            return first.getBoundingClientRect().width + mr;
+        };
+
+        let isAnimating = false;
+        const slide = (dir) => {
+            if (isAnimating) return;
+            const step = getStep();
+            if (!step) return;
+            isAnimating = true;
+            pauseAuto();
+
+            // Ensure inline baseline equals computed position
+            const currentX = getComputedTranslateX(track);
+            track.style.transition = 'none';
+            track.style.transform = `translateX(${currentX}px)`;
+            // Force reflow before animating
+            // eslint-disable-next-line no-unused-expressions
+            track.offsetHeight;
+            const targetX = dir === 'next' ? currentX - step : currentX + step;
+
+            track.style.transition = 'transform 500ms ease';
+            track.style.transform = `translateX(${targetX}px)`;
+
+            // After transition, reorder DOM for infinite effect
+            const onEnd = () => {
+                track.style.transition = 'none';
+                const imgs = track.querySelectorAll('img');
+                if (imgs.length > 0) {
+                    if (dir === 'next') {
+                        // Move first image to end and reset X
+                        track.appendChild(imgs[0]);
+                        track.style.transform = `translateX(${currentX}px)`;
+                    } else {
+                        // Move last image to front and reset X
+                        track.insertBefore(imgs[imgs.length - 1], imgs[0]);
+                        track.style.transform = `translateX(${currentX}px)`;
+                    }
+                }
+                // Force reflow then allow CSS animation again
+                // eslint-disable-next-line no-unused-expressions
+                track.offsetHeight;
+                isAnimating = false;
+                // Resume auto after short delay
+                clearTimeout(glimpsesResumeT);
+                glimpsesResumeT = setTimeout(() => resumeAuto(), 2000);
+            };
+
+            track.addEventListener('transitionend', onEnd, { once: true });
+        };
+
+        nextBtn.addEventListener('click', () => slide('next'));
+        prevBtn.addEventListener('click', () => slide('prev'));
+
+        // Pause on hover/focus for accessibility
+        container.addEventListener('mouseenter', pauseAuto);
+        container.addEventListener('mouseleave', resumeAuto);
+        container.addEventListener('focusin', pauseAuto);
+        container.addEventListener('focusout', resumeAuto);
+    })();
 
 });
