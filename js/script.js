@@ -88,13 +88,14 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // --- Fade-in Animation on Scroll ---
+    // --- Enhanced Fade-in and Stagger Animation on Scroll ---
     const faders = document.querySelectorAll('.fade-in');
-    const reveals = document.querySelectorAll('.reveal-up');
+    const sliders = document.querySelectorAll('.slide-in-left, .slide-in-right');
+    const scalers = document.querySelectorAll('.scale-in');
     
     const appearOptions = {
-        threshold: 0.1,
-        rootMargin: "0px 0px -50px 0px"
+        threshold: 0.15,
+        rootMargin: "0px 0px -100px 0px"
     };
     
     const appearOnScroll = new IntersectionObserver(function(entries, appearOnScroll) {
@@ -108,7 +109,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }, appearOptions);
 
-    [...faders, ...reveals].forEach(el => appearOnScroll.observe(el));
+    [...faders, ...sliders, ...scalers].forEach(el => appearOnScroll.observe(el));
+
+    // Add stagger animation to card grids
+    const cardGrids = document.querySelectorAll('.card-grid, .feature-grid');
+    cardGrids.forEach(grid => {
+        const cards = grid.querySelectorAll('.card, .feature-item');
+        cards.forEach((card, index) => {
+            card.classList.add('fade-in');
+            card.classList.add(`stagger-${Math.min(index + 1, 6)}`);
+            appearOnScroll.observe(card);
+        });
+    });
 
     // --- Smooth Scroll for Academics Page Sections ---
     // This handles the dropdown links smoothly scrolling to sections on the same page.
